@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        h1 {
+            font-size: 64px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        button {
+            font-size: large;
+            margin: 5px;
+        }
+
+        #timer-sec {
+            color: rgb(4, 124, 228);
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <div>
+            <h1>
+                <span id="timer-min"> 00 </span> : <span id="timer-sec"> 00 </span>
+            </h1>
+        </div>
+        <div>
+            <button onclick="start()" id="btn"> Start </button>
+            <button onclick="reset()"> Reset </button>
+        </div>
+    </center>
+</body>
+
+<script>
+    let sec = 0, min = 0;
+    let timer;
+
+    const timerMin = document.getElementById('timer-min');
+    const timerSec = document.getElementById('timer-sec');
+    const btn = document.getElementById('btn');
+
+    const sounds = {
+        start: new Audio('audio/start.mp3'),
+        tick: new Audio('audio/tick.mp3'),
+        pause: new Audio('audio/pause.mp3'),
+        aMin: new Audio('audio/chime.mp3')
+    }
+
+    function start() {
+        sounds.start.play();
+
+        btn.textContent = 'Pause';
+        btn.setAttribute('onclick', 'pause()');
+
+        timer = setInterval(() => {
+            sec++;
+            if (sec == 59) {
+                min++;
+                sec = 0;
+                sounds.aMin.play();
+            } 
+            else sounds.tick.play();
+
+            timerMin.textContent = min.toString().padStart(2, '0');
+            timerSec.textContent = sec.toString().padStart(2, '0');
+        }, 1000);
+    }
+
+    function pause() {
+        sounds.pause.play();
+        clearInterval(timer);
+        btn.textContent = 'Resume';
+        btn.setAttribute('onclick', 'start()');
+    }
+
+    function reset() {
+        clearInterval(timer);
+        sec = min = 0;
+
+        btn.textContent = 'Start';
+        btn.setAttribute('onclick', 'start()');
+
+        timerMin.textContent = '00';
+        timerSec.textContent = '00';
+    }
+</script>
+
+</html>
